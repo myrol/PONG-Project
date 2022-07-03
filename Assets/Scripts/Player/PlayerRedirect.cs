@@ -10,6 +10,7 @@ using UnityEngine;
 public class PlayerRedirect : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
+    [SerializeField] private bool verbose = false;
 
     private Ball ball;
 
@@ -37,8 +38,6 @@ public class PlayerRedirect : MonoBehaviour
 
     private void Update()
     {
-        drawDebugCircle();
-
         // Guard Clause for if the ball is not in range
         if (ball == null) return;
 
@@ -48,19 +47,15 @@ public class PlayerRedirect : MonoBehaviour
             Vector3 mouseToWorldPosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             Vector3 direction = (mouseToWorldPosition - transform.position).normalized;
 
+            Verbose("mouseToWorldPosition: " + mouseToWorldPosition);
+            Verbose("direction: " + direction);
+
             ball.redirect(direction);
         }
     }
 
-    private void drawDebugCircle()
+    private void Verbose(string s)
     {
-        Debug.DrawLine(transform.position,
-            transform.position + Vector3.right * _range);
-        Debug.DrawLine(transform.position,
-            transform.position + Vector3.down * _range);
-        Debug.DrawLine(transform.position,
-            transform.position + Vector3.up * _range);
-        Debug.DrawLine(transform.position,
-            transform.position + Vector3.left * _range);
+        if (verbose) Debug.Log("[DEBUG PlayerRedirect] " + s);
     }
 }

@@ -1,23 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D _rigidbody;
-    [SerializeField] private float _speed = 4f;
+    [SerializeField] public float _speed = 4f;
 
     private Vector2 velocity;
+
+    public bool isInControl = true;
 
     // Movement
     private void Update()
     {
+        if (!isInControl) return;
+
         // Movement
-        velocity = getInputDirection() * _speed; // Fetch Player Input
+        velocity = GetInputDirection() * _speed; // Fetch Player Input
         _rigidbody.velocity = velocity; // Apply to rigidbody
     }
 
-    private Vector2 getInputDirection()
+    public Vector2 GetInputDirection()
     {
         Vector2 direction = Vector2.zero;
 

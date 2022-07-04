@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class Ball : MonoBehaviour
 {
@@ -10,17 +11,23 @@ public class Ball : MonoBehaviour
     [SerializeField] private Transform _spawnPosition;
     [SerializeField] private float _speed = 5f;
 
+    private float originalSpeed;
     private Vector2 velocity;
 
     void Start()
     {
+        originalSpeed = _speed;
+
         resetPosition();
         chooseRandomDirection();
     }
 
+    /*
+     * Applies the velocity and the speed to the rigid body
+     */
     private void FixedUpdate()
     {
-        _rigidbody.velocity = velocity;
+        _rigidbody.velocity = velocity * _speed;
     }
 
     /*
@@ -53,8 +60,7 @@ public class Ball : MonoBehaviour
         float y = Random.Range(-1f, 1f);
 
         Vector2 direction = new Vector2(x, y).normalized;
-
-        velocity = direction * _speed;
+        velocity = direction;
 
         Verbose("Chose a new random direction to fly in: " + velocity);
     }
@@ -64,7 +70,7 @@ public class Ball : MonoBehaviour
      */
     public void redirect(Vector2 newDirection)
     {
-        velocity = newDirection.normalized * _speed;
+        velocity = newDirection.normalized;
         Verbose("Redirected with velocity " + newDirection);
     }
 
@@ -76,5 +82,16 @@ public class Ball : MonoBehaviour
     private void Verbose(string s)
     {
         if (verbose) Debug.Log("[DEBUG Ball] " + s);
+    }
+
+    /*
+     * Adds a small force on the ball when redirecting, which slows down
+     * to its original value over two seconds
+     */
+    public void pushBy(float value)
+    {
+        _speed = originalSpeed + value;
+        Verbose(""+_speed);
+        DOTween.To(() => _speed, (x) => _speed = x, originalSpeed, .7f).SetEase(Ease.OutCirc);
     }
 }

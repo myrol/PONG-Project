@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Reflect
+  - Ball
   layers:
   - Default
   - TransparentFX

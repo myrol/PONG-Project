@@ -11,7 +11,10 @@ public class PlayerRedirect : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
     [SerializeField] private bool verbose = false;
+    [SerializeField] private float _cooldown = 1f;
+    [SerializeField] private float _force = 9f;
 
+    private bool canRedirect = true;
     private Ball ball;
 
     /*
@@ -39,7 +42,7 @@ public class PlayerRedirect : MonoBehaviour
     private void Update()
     {
         // Guard Clause for if the ball is not in range
-        if (ball == null) return;
+        if (ball == null || !canRedirect) return;
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -51,7 +54,17 @@ public class PlayerRedirect : MonoBehaviour
             Verbose("direction: " + direction);
 
             ball.redirect(direction);
+            ball.pushBy(_force); // Applies a small force to the ball (decays over time)
+
+            StartCoroutine(Cooldown()); // The player cannot redirect for a short period of time
         }
+    }
+
+    private IEnumerator Cooldown()
+    {
+        canRedirect = false;    Verbose("Redirect on cooldown...");
+        yield return new WaitForSeconds(_cooldown);
+        canRedirect = true;     Verbose("Redirect back up");
     }
 
     private void Verbose(string s)

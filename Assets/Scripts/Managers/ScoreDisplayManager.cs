@@ -7,11 +7,11 @@ using TMPro;
  * This class Manages the Score of a Game.
  * A player scores, when it gets its opponent to be in the last section when scoring a ball.
  */
-public class ScoreManager : MonoBehaviour
+public class ScoreDisplayManager : MonoBehaviour
 {
-    public static ScoreManager Instance;
+    public static ScoreDisplayManager Instance;
+    public TextMeshPro display;
 
-    [SerializeField] TextMeshPro display;
     private byte p1_score = 0, p2_score = 0;
 
     private void Awake()
@@ -25,9 +25,11 @@ public class ScoreManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(this);
         }
+
+        Reset();
     }
 
-    public void ResetScore()
+    public void Reset()
     {
         p1_score = 0; 
         p2_score = 0;
